@@ -450,7 +450,7 @@ import time
 def runtime():
     for i in range(10):
         start = time.time()
-        stationary_firing_rate(1,1,0,n_max = 100,p_max = 100+100*i,coeff=False)
+        stationary_firing_rate(1,1,0,n_max = 100,p_max = 100,coeff=True)
         t_elapsed = time.time()-start
         print('time', t_elapsed)
 
