@@ -3,7 +3,7 @@ from math import sqrt,pi
 import torch
 
 
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
 def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
@@ -93,7 +93,7 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 import time
 import matplotlib.pyplot as plt
 
-def test(n_ens=1000000):
+def test(n_ens=10000000):
 
     T = 10
     dt = 0.05
@@ -107,18 +107,20 @@ def test(n_ens=1000000):
 
     # Numpy implentation
     start = time.time()
-    firing_rate,_,_,_ = theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
+    firing_rate_np,_,_,_ = theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
     t_elapsed = time.time()-start
     print('time', t_elapsed)
-    plt.plot(firing_rate)
+    plt.plot(firing_rate_np)
 
-    # PyTorch cuda implementation
-    start = time.time()
-    firing_rate,_,_,_ = theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
-    t_elapsed = time.time()-start
-    print('time torch', t_elapsed)
-    plt.plot(firing_rate)
-    plt.show()
+    for _ in range(5):
+        # PyTorch cuda implementation
+        start = time.time()
+        firing_rate,_,_,_ = theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
+        t_elapsed = time.time()-start
+        print('time torch', t_elapsed)
+        plt.plot(firing_rate_np)
+        plt.plot(firing_rate)
+        plt.show()
 
 
 if __name__ == "__main__":
