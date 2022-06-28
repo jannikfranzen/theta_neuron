@@ -4,11 +4,11 @@ import time
 import pickle
 from math import pi,sqrt
 
-T = 10#10
+T = 110
 dt = 0.005
 D = 1
-n_ens = 1000#000
-t_relax = 2#10
+n_ens = 1000000
+t_relax = 10
 n_relax = int()
 signal = np.zeros(int(T/dt))
 noise_ens = np.zeros(n_ens)
@@ -19,9 +19,9 @@ tau_start = 0.01
 tau_end = 10
 tau_res = 20
 tau_vec = np.zeros(tau_res)
-dt = pow(tau_end/tau_start,1/(tau_res-1))
+dt_tau = pow(tau_end/tau_start,1/(tau_res-1))
 for n in range(tau_res):
-    tau_vec[n] = tau_start*pow(dt,n+1)
+    tau_vec[n] = tau_start*pow(dt_tau,n+1)
 
 # span mu vector
 mu_vec = np.array([-.9,-.5,-.1,.3,.7,1.1,1.5,1.9])
@@ -41,6 +41,7 @@ for mu in mu_vec:
         
         if j >= 0:
             stat_firing_rate[i,j] = np.mean(firing_rate[n_relax:])
+            print('\n','firing rate',stat_firing_rate[i,j])
         print(i,j,'time torch', t_elapsed)
 
         j += 1
