@@ -49,7 +49,7 @@ for mu in mu_vec:
     i += 1
 
 
-name = 'theta_sim_D'
+name = 'theta_sim_fig7'
 f = open(name + '.pckl', 'wb')
 pickle.dump([dt,T,t_relax,n_ens,tau_vec[1:-1],D,mu_vec,stat_firing_rate[:,:]], f)
 f.close()
