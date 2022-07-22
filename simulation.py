@@ -48,7 +48,7 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
 def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
     # setup parameters
     N_ens = len(phase_ens)
