@@ -5,7 +5,7 @@ import pickle
 from math import pi,sqrt
 
 T = 110
-dt = 0.005
+dt = 0.002
 D = 1
 n_ens = 1000000
 t_relax = 10
@@ -17,7 +17,7 @@ phase_ens = np.linspace(0,2*pi,n_ens)
 # span tau vector
 tau_start = 0.01
 tau_end = 10
-tau_res = 20
+tau_res = 10
 tau_vec = np.zeros(tau_res)
 dt_tau = pow(tau_end/tau_start,1/(tau_res-1))
 for n in range(tau_res):
@@ -51,5 +51,5 @@ for mu in mu_vec:
 
 name = 'theta_sim_D'
 f = open(name + '.pckl', 'wb')
-pickle.dump([tau_vec[1:-1],D,mu_vec,stat_firing_rate[:,:]], f)
+pickle.dump([dt,T,t_relax,n_ens,tau_vec[1:-1],D,mu_vec,stat_firing_rate[:,:]], f)
 f.close()
