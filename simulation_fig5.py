@@ -21,7 +21,7 @@ tau_res = 10
 tau_vec = np.zeros(tau_res)
 dt_tau = pow(tau_end/tau_start,1/(tau_res-1))
 for n in range(tau_res):
-    tau_vec[n] = tau_start*pow(dt_tau,n+1)
+    tau_vec[n] = tau_start*pow(dt_tau,n)
 
 # span mu vector
 mu_vec = np.array([1.0,3.0,5.0])
