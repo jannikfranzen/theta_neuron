@@ -7,8 +7,8 @@ from math import pi,sqrt
 import matplotlib.pyplot as plt
 
 T = 50
-dt = 0.002
-n_ens = 1000000
+dt = 0.005
+n_ens = 500000
 t_vec = np.arange(0,T,dt)
 noise_ens = np.zeros(n_ens)
 phase_ens = np.linspace(0,2*pi,n_ens)
