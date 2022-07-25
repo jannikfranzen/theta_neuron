@@ -4,10 +4,10 @@ import time
 import pickle
 from math import pi,sqrt
 
-T = 110
-dt = 0.002
+T = 510
+dt = 0.005
 D = 1
-n_ens = 1000000
+n_ens = 500000
 t_relax = 10
 n_relax = int()
 signal = np.zeros(int(T/dt))
@@ -21,7 +21,7 @@ tau_res = 10
 tau_vec = np.zeros(tau_res)
 dt_tau = pow(tau_end/tau_start,1/(tau_res-1))
 for n in range(tau_res):
-    tau_vec[n] = tau_start*pow(dt_tau,n+1)
+    tau_vec[n] = tau_start*pow(dt_tau,n)
 
 # span mu vector
 mu_vec = np.array([-.9,-.5,-.1,.3,.7,1.1,1.5,1.9])
