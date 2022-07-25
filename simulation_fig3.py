@@ -4,10 +4,10 @@ import time
 import pickle
 from math import pi,sqrt
 
-T = 110
-dt = 0.002
+T = 510
+dt = 0.005
 sigma = 1
-n_ens = 1000000
+n_ens = 500000
 t_relax = 10
 n_relax = int()
 signal = np.zeros(int(T/dt))
