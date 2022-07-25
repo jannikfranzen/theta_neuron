@@ -7,7 +7,7 @@ from math import pi,sqrt
 import matplotlib.pyplot as plt
 
 T = 20
-dt = 0.01
+dt = 0.005
 n_ens = 10000000
 t_vec = np.arange(0,T,dt)
 noise_ens = np.zeros(n_ens)
