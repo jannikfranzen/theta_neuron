@@ -65,9 +65,10 @@ An example of how this function can be used to compute the firing rate with resp
 <img src="images/example_stationary_rate_1.svg">
 </p>
 
-```diff
-- Inserting an exemple on how well the MCF method works!!!
-```
+As described in the paper, the MCF method is based on the assumptions that the corresponding Fokker-Planck equation of the system can be expanded in terms of Hermite and Fourier functions and the system dynamics sufficiently described with a limited number of the Hermite functions (´p_max´ and ´n_max´). The convergence is illustrated for two graphs below. In the excitable regime, the MCF method converges slower for small and large correlation times whereas in the mean driven regime only for large correlation times. It should be noted however, that for those limit cases analytical solutions already exist. Excitingly in the regime of intermediate correlation times the MCF method alway converges very fast. As shown below, even the coice of ´n_max = p_max = 16´ leads to a accurate description of the firing rate in a large interval. Thus, in this case only 16x16 matrices must be inverted 16 times to obtain a data point.   
+
+Since the MCF method is based on the it can also fail to describe the stat. firing rate. 
+
 <p align="center">
 <img width="650" src="images/error.png">
 </p>
