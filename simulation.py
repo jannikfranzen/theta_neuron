@@ -10,14 +10,12 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
     N_ens = len(phase_ens)
     N = len(signal)
     period = 2*pi
-    t = 0
 
     # precompute constants for noise generation
     A = 1-dt/tau 
     B = sqrt(dt*2*sigma*sigma/tau)
 
     # initialization 
-    mean_phase_vel = np.zeros(N)
     firing_rate = np.zeros(N)
 
 
@@ -28,21 +26,18 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
         # update the phase
         cos_phase = np.cos(phase_ens)
-        dPhaseVel = 1+cos_phase + (1-cos_phase)*(noise_ens+mu+signal[i])
-        phase_ens = (phase_ens + dPhaseVel*dt) 
+        phase_ens += (1+cos_phase + (1-cos_phase)*(noise_ens+mu+signal[i]))*dt 
 
         # compute all spiking neurons, and reset the phase of spiking neurons
         spikes = phase_ens/period
         spikes = spikes.astype(int)
         phase_ens = phase_ens % period
 
-        # compute the firing rate (and mean phase velocity, which is an alternative way of computing the firing rate in the stationary case)
-        mean_phase_vel[i] = np.mean(dPhaseVel)
+        # compute the firing rate
         firing_rate[i] = np.mean(spikes)/dt
 
-        t += dt
 
-    return firing_rate,mean_phase_vel/period,noise_ens,phase_ens
+    return firing_rate,noise_ens,phase_ens
 
 
 
@@ -54,14 +49,12 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
     N_ens = len(phase_ens)
     N = len(signal)
     period = 2*pi
-    t = 0
 
     # precompute constants for noise generation
     A = 1-dt/tau 
     B = sqrt(dt*2*sigma*sigma/tau)
 
     # initialization 
-    mean_phase_vel = torch.zeros(N).to(DEVICE)
     firing_rate = torch.zeros(N).to(DEVICE)
     noise_ens_torch = torch.from_numpy(noise_ens).to(DEVICE)
     phase_ens_torch = torch.from_numpy(phase_ens).to(DEVICE)
@@ -74,55 +67,14 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
         # update the phase
         cos_phase = torch.cos(phase_ens_torch)
-        dPhaseVel = 1+cos_phase + (1-cos_phase)*(noise_ens_torch+mu+signal[i])
-        phase_ens_torch = (phase_ens_torch + dPhaseVel*dt) 
+        phase_ens_torch += (1+cos_phase + (1-cos_phase)*(noise_ens_torch+mu+signal[i]))*dt 
 
         # compute all spiking neurons, and reset the phase of spiking neurons
         spikes = torch.floor(phase_ens_torch/period)
         phase_ens_torch = phase_ens_torch % period
 
-        # compute the firing rate (and mean phase velocity, which is an alternative way of computing the firing rate in the stationary case)
-        mean_phase_vel[i] = torch.mean(dPhaseVel)
+        # compute the firing rate
         firing_rate[i] = torch.mean(spikes)/dt
 
-        t += dt
 
-    return firing_rate.cpu().detach().numpy(), mean_phase_vel.cpu().detach().numpy()/period, noise_ens_torch.cpu().detach().numpy(), phase_ens_torch.cpu().detach().numpy()
-
-
-import time
-import matplotlib.pyplot as plt
-
-def test(n_ens=100000):
-
-    T = 10
-    dt = 0.05
-    mu = 1
-    tau = 1
-    sigma = 1
-
-    signal = np.zeros(int(T/dt))
-    noise_ens = np.zeros(n_ens)
-    phase_ens = np.linspace(0,2*pi,n_ens)
-
-    # Numpy implentation
-    start = time.time()
-    firing_rate_np,_,_,_ = theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
-    t_elapsed = time.time()-start
-    print('time', t_elapsed)
-    plt.plot(firing_rate_np)
-
-    for _ in range(5):
-        # PyTorch cuda implementation
-        start = time.time()
-        firing_rate,_,_,_ = theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
-        t_elapsed = time.time()-start
-        print('time torch', t_elapsed)
-        plt.plot(firing_rate_np)
-        plt.plot(firing_rate)
-        plt.show()
-
-
-if __name__ == "__main__":
-    
-    test()
+    return firing_rate.cpu().detach().numpy(), noise_ens_torch.cpu().detach().numpy(), phase_ens_torch.cpu().detach().numpy()
