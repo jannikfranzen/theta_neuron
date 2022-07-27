@@ -22,15 +22,12 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     for i in range(N):
         
-        # generate noise (noise = A*noise + B*random_standard_normal_dist)
-        noise_ens *= A
-        noise_ens += np.random.normal(0,B,N_ens)
-        
-        #noise_ens = A*noise_ens+np.random.normal(0,B,N_ens)
+        # generate noise
+        noise_ens = A*noise_ens+np.random.normal(0,B,N_ens)
 
         # update the phase
         cos_phase = np.cos(phase_ens)
-        phase_ens += (1+cos_phase + (1-cos_phase)*(noise_ens+mu+signal[i]))*dt 
+        phase_ens = phase_ens + (1+cos_phase + (1-cos_phase)*(noise_ens+mu+signal[i]))*dt 
 
         # compute all spiking neurons, and reset the phase of spiking neurons
         spikes = phase_ens/period
@@ -67,11 +64,8 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     for i in range(N):
         
-        # generate noise (noise = A*noise + B*random_standard_normal_dist)
-        noise_ens *= A
-        noise_ens += B*torch.randn(N_ens,device=DEVICE)
-        
-        #noise_ens_torch = A*noise_ens_torch+B*torch.randn(N_ens,device=DEVICE)
+        # generate noise
+        noise_ens_torch = A*noise_ens_torch + B*torch.randn(N_ens,device=DEVICE)
 
         # update the phase
         cos_phase = torch.cos(phase_ens_torch)
@@ -86,44 +80,3 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
 
     return firing_rate.cpu().detach().numpy(), noise_ens_torch.cpu().detach().numpy(), phase_ens_torch.cpu().detach().numpy()
-
-
-
-
-
-import time
-import matplotlib.pyplot as plt
-
-def test(n_ens=100000):
-
-    T = 10
-    dt = 0.05
-    mu = 1
-    tau = 1
-    sigma = 1
-
-    signal = np.zeros(int(T/dt))
-    noise_ens = np.zeros(n_ens)
-    phase_ens = np.linspace(0,2*pi,n_ens)
-
-    # Numpy implentation
-    start = time.time()
-    firing_rate_np,_,_,_ = theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
-    t_elapsed = time.time()-start
-    print('time', t_elapsed)
-    plt.plot(firing_rate_np)
-
-    for _ in range(5):
-        # PyTorch cuda implementation
-        start = time.time()
-        firing_rate,_,_,_ = theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
-        t_elapsed = time.time()-start
-        print('time torch', t_elapsed)
-        plt.plot(firing_rate_np)
-        plt.plot(firing_rate)
-        plt.show()
-
-
-if __name__ == "__main__":
-    
-    test()
