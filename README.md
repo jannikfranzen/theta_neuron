@@ -40,7 +40,7 @@ Here, we are interested in the instantanous firing rate of this noisy theta neur
 
 In the following we consider three different cases where the neuron is subject to a correlated noise and 1) no external stimulus, 2) a cosine stimulus or 3) two cosine stimuli. In particular, we always consider the case of <img src="images/limit.svg">, so that the the initial conditions can be neglected. All functions needed to compute the firing rate in this three cases are provided in `MCF.py`. For an explanation on how to deploy the MCF method see the following examples. 
 
-In our paper, we validated the results gained with the MCF method with numerical simulations. To this end we used a simple Euler-Maruyama scheme of the DEQ above, as described in section 4. The core implementation (in PyTorch - allowing GPU acceleration) can be found in `simulation.py`.
+In our paper, we validated the results gained with the MCF method with numerical simulations. To this end we used a simple Euler-Maruyama scheme of the DEQ above. The core implementation (in Python and PyTorch - allowing GPU acceleration) can be found in `simulation.py`. How this can be used to compute properties such as the stationary firing rate is shown in `example_simulation.py`.
 
 ## 1) Stationary firing rate
 
