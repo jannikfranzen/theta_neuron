@@ -53,6 +53,7 @@ With no external time-dependend stimulus the firing rate of the neuron relaxes i
 This stationary firing rate can be computed using the MCF method. The implementation is giving by the function `stationary_firing_rate(tau,sigma,mu,n_max = 100,p_max = 100)`, e.g.:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 
 stationary_rate = MCF.stationary_firing_rate(tau=1,sigma=1,mu=-.5)
