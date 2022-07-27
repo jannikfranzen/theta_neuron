@@ -69,7 +69,7 @@ An example of how this function can be used to compute the firing rate with resp
 - Inserting an exemple on how well the MCF method works!!!
 ```
 <p align="center">
-<img src="images/error.svg">
+<img src="images/error.png">
 </p>
 
 ## 2) Cosine stimulus
