@@ -58,7 +58,7 @@ import MCF
 stationary_rate = MCF.stationary_firing_rate(tau=1,sigma=1,mu=-.5)
 ```
 
-An example of how this function can be used to compute the firing rate with respect to the correlation time <img src="images/corr_time.svg"> is giving in `example_stationary_firing.py`. As a reference the firing rate was also simulated by numerical integration of the stochastic differential equation. The output should looks as follows:
+An example of how this function can be used to compute the firing rate with respect to the correlation time <img src="images/corr_time.svg"> is giving in `example_stationary_firing.py`. As a reference the firing rate was also simulated by numerical integration of the stochastic differential equation. The output should look as follows:
 
 <p align="center">
 <img src="images/example_stationary_rate_1.svg">
