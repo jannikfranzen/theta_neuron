@@ -64,6 +64,10 @@ An example of how this function can be used to compute the firing rate with resp
 <img src="images/example_stationary_rate_1.svg">
 </p>
 
+```diff
+- Inserting an exemple on how well the MCF method works!!!
+```
+
 ## 2) Cosine stimulus
 
 If the model is driven by an additional periodic stimulus such as
