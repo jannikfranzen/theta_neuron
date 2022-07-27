@@ -1,6 +1,7 @@
 # Theta neuron and correlated noise
 
-This repository provides code for the numerical matrix-continued fraction (MCF) method from the Paper. url....
+This repository provides code (including a PyTorch implementation for GPU acceleration) for the numerical matrix-continued fraction (MCF) method from the Paper. url....
+
 In the following we briefly introduce the considered neuron model and the statistics of interests, i.e. the firing rate, which is computed by means of the MCF methods. For a detailed description of the MCF method please see the paper above.
 
 <p align="center">
@@ -37,7 +38,9 @@ Here, we are interested in the instantanous firing rate of this noisy theta neur
 <img src="images/firing_rate_def.svg">
 </p>
 
-In the following we consider three different cases where the neuron is subject to a correlated noise and 1) no external stimulus, 2) a cosine stimulus or 3) two cosine stimuli. In particular, we always consider the case of <img src="images/limit.svg">, so that the the initial conditions can be neglected. All functions needed to compute the firing rate in this three cases are provided in `MCF.py`. For an explanation see the following examples. 
+In the following we consider three different cases where the neuron is subject to a correlated noise and 1) no external stimulus, 2) a cosine stimulus or 3) two cosine stimuli. In particular, we always consider the case of <img src="images/limit.svg">, so that the the initial conditions can be neglected. All functions needed to compute the firing rate in this three cases are provided in `MCF.py`. For an explanation on how to deploy the MCF method see the following examples. 
+
+In our paper, we validated the results gained with the MCF method with numerical simulations. To this end we used a simple Euler-Maruyama scheme of the DEQ above, as described in section 4. The core implementation (in PyTorch - allowing GPU acceleration) can be found in `simulation.py`.
 
 ## 1) Stationary firing rate
 
@@ -55,11 +58,15 @@ import MCF
 stationary_rate = MCF.stationary_firing_rate(tau=1,sigma=1,mu=-.5)
 ```
 
-An example of how this function can be used to compute the firing rate with respect to the correlation time <img src="images/corr_time.svg"> is giving in `example_stationary_firing.py`. As a reference the firing rate was also simulated by numerical integration of the stochastic differential equation. The output should looks as follows:
+An example of how this function can be used to compute the firing rate with respect to the correlation time <img src="images/corr_time.svg"> is giving in `example_stationary_firing.py`. As a reference the firing rate was also simulated by numerical integration of the stochastic differential equation. The output should look as follows:
 
 <p align="center">
 <img src="images/example_stationary_rate_1.svg">
 </p>
+
+```diff
+- Inserting an exemple on how well the MCF method works!!!
+```
 
 ## 2) Cosine stimulus
 
