@@ -93,6 +93,7 @@ the firing rate relaxes into its *cyclo-stationary* state. We can express this c
 The function `response_funcs_cosine_signal(tau,sigma,mu,omega,l_max = 5,n_max = 100,p_max = 100)` computes all response functions `r_l,k` up to the order `l_max`. These can then be used to compute the cyclo-stationary firing rate implemented in `response_cosine_signal(...)`:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 from math import pi
 
@@ -152,6 +153,7 @@ Note that in the paper we used a slightly different notation, where e.g.
 The response functions can be computed using the function `response_funcs_two_cosine_signals(tau,sigma,mu,omega_1,omega_2,n_max=100,p_max=100)`, which can be used to compute the response with `response_two_cosine_signals(...)`:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 from math import pi
 
