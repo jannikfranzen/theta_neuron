@@ -53,6 +53,7 @@ With no external time-dependend stimulus the firing rate of the neuron relaxes i
 This stationary firing rate can be computed using the MCF method. The implementation is giving by the function `stationary_firing_rate(tau,sigma,mu,n_max = 100,p_max = 100)`, e.g.:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 
 stationary_rate = MCF.stationary_firing_rate(tau=1,sigma=1,mu=-.5)
@@ -67,6 +68,9 @@ An example of how this function can be used to compute the firing rate with resp
 ```diff
 - Inserting an exemple on how well the MCF method works!!!
 ```
+<p align="center">
+<img src="images/error.svg">
+</p>
 
 ## 2) Cosine stimulus
 
@@ -92,6 +96,7 @@ the firing rate relaxes into its *cyclo-stationary* state. We can express this c
 The function `response_funcs_cosine_signal(tau,sigma,mu,omega,l_max = 5,n_max = 100,p_max = 100)` computes all response functions `r_l,k` up to the order `l_max`. These can then be used to compute the cyclo-stationary firing rate implemented in `response_cosine_signal(...)`:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 from math import pi
 
@@ -151,6 +156,7 @@ Note that in the paper we used a slightly different notation, where e.g.
 The response functions can be computed using the function `response_funcs_two_cosine_signals(tau,sigma,mu,omega_1,omega_2,n_max=100,p_max=100)`, which can be used to compute the response with `response_two_cosine_signals(...)`:
 
 ```python
+# for PyTorch version just swap MCF <-> MCF_torch
 import MCF
 from math import pi
 
