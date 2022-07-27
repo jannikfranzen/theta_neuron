@@ -4,6 +4,7 @@ import torch
 
 
 
+
 def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     # setup parameters
@@ -21,8 +22,11 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     for i in range(N):
         
-        # generate noise
-        noise_ens = A*noise_ens+np.random.normal(0,B,N_ens)
+        # generate noise (noise = A*noise + B*random_standard_normal_dist)
+        noise_ens *= A
+        noise_ens += np.random.normal(0,B,N_ens)
+        
+        #noise_ens = A*noise_ens+np.random.normal(0,B,N_ens)
 
         # update the phase
         cos_phase = np.cos(phase_ens)
@@ -41,11 +45,12 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
 
 
+
 def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    # setup parameters
+    # setup parameters 
     N_ens = len(phase_ens)
     N = len(signal)
     period = 2*pi
@@ -62,8 +67,11 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
     for i in range(N):
         
-        # generate noise
-        noise_ens_torch = A*noise_ens_torch+B*torch.randn(N_ens,device=DEVICE)
+        # generate noise (noise = A*noise + B*random_standard_normal_dist)
+        noise_ens *= A
+        noise_ens += B*torch.randn(N_ens,device=DEVICE)
+        
+        #noise_ens_torch = A*noise_ens_torch+B*torch.randn(N_ens,device=DEVICE)
 
         # update the phase
         cos_phase = torch.cos(phase_ens_torch)
