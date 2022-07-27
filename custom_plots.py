@@ -109,3 +109,39 @@ def plot_stationary_rate(tau,firing_rate,tau_sim,firing_rate_sim,parameters,titl
     ax.grid(True,ls='dotted')
 
     plt.show()
+
+
+
+def plot_stat_simulation(tau_sim,firing_rate_sim,parameters,title):
+
+    f0 = 10
+
+    mu = parameters[0]
+    sigma = parameters[1]
+
+    fig = plt.figure(figsize=(6,4))
+    ax = fig.add_subplot()
+    fig.suptitle(title.upper(), fontsize=12)
+    ax.set_title(r'for $\mu = $'+str(mu)+'; $\sigma=$'+str(sigma), fontsize=f0-1.5, pad=8)
+
+    ax.scatter(tau_sim,firing_rate_sim,s=8,label='Simulation',zorder=2)
+
+    plt.xscale('log')
+
+    ax.set_xlabel(r'Correlation time',fontsize=f0)
+    ax.set_ylabel(r'Firing rate',fontsize=f0)
+    ax.tick_params(labelsize=f0-3)
+    ax.tick_params(labelsize=f0-3)
+    
+    if mu > 1:
+        loc_legend = 1
+    else:
+        loc_legend = 0
+    
+    ax.legend(loc=loc_legend,fancybox=True,fontsize=f0-1.5)
+
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.grid(True,ls='dotted')
+
+    plt.show()
