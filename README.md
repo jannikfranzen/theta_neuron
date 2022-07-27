@@ -1,6 +1,7 @@
 # Theta neuron and correlated noise
 
-This repository provides code for the numerical matrix-continued fraction (MCF) method from the Paper. url....
+This repository provides code (including a PyTorch implementation for GPU acceleration) for the numerical matrix-continued fraction (MCF) method from the Paper. url....
+
 In the following we briefly introduce the considered neuron model and the statistics of interests, i.e. the firing rate, which is computed by means of the MCF methods. For a detailed description of the MCF method please see the paper above.
 
 <p align="center">
