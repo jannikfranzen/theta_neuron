@@ -86,3 +86,44 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
 
 
     return firing_rate.cpu().detach().numpy(), noise_ens_torch.cpu().detach().numpy(), phase_ens_torch.cpu().detach().numpy()
+
+
+
+
+
+import time
+import matplotlib.pyplot as plt
+
+def test(n_ens=100000):
+
+    T = 10
+    dt = 0.05
+    mu = 1
+    tau = 1
+    sigma = 1
+
+    signal = np.zeros(int(T/dt))
+    noise_ens = np.zeros(n_ens)
+    phase_ens = np.linspace(0,2*pi,n_ens)
+
+    # Numpy implentation
+    start = time.time()
+    firing_rate_np,_,_,_ = theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
+    t_elapsed = time.time()-start
+    print('time', t_elapsed)
+    plt.plot(firing_rate_np)
+
+    for _ in range(5):
+        # PyTorch cuda implementation
+        start = time.time()
+        firing_rate,_,_,_ = theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens)
+        t_elapsed = time.time()-start
+        print('time torch', t_elapsed)
+        plt.plot(firing_rate_np)
+        plt.plot(firing_rate)
+        plt.show()
+
+
+if __name__ == "__main__":
+    
+    test()
