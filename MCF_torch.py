@@ -11,6 +11,8 @@ from math import sqrt,pi
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+
+
 ######################################
 ########## STATIONARY STATE ##########
 ######################################
@@ -66,7 +68,7 @@ def stationary_firing_rate(tau,sigma,mu,n_max = 100,p_max = 100,coeff = False):
         S = torch.inverse(M1/n + M2 - S)
 
         if coeff == True: 
-            S_memory[n-1,:,:] = S#----------------------------------------------------------------------copy problem?
+            S_memory[n-1,:,:] = S
 
 
     ### 3: COMPUTE STATIONARY FIRING RATE ###
@@ -99,7 +101,7 @@ def stationary_firing_rate(tau,sigma,mu,n_max = 100,p_max = 100,coeff = False):
 #######################################
 
 
-def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_prevsum,c_N_prevsum):
+def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_prevsum_np,c_N_prevsum_np):
     '''
         Computes a single response function r_{l,k} of the theta neuron 
         driven by correlated noise and a cosine stimulus 
@@ -117,14 +119,16 @@ def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_pr
             sigma -- standard deviation \\ 
             mu -- mean input \\
             n_max,p_max -- number of Fourier modes, Hermite functions included \\
-            c_P_prevsum,c_N_prevsum -- sum of previousely computed coefficients for l-1,k+-1; 
+            c_P_prevsum_np,c_N_prevsum_np -- sum of previousely computed coefficients for l-1,k+-1; 
             '_P' denotes all coeff with n = 0,1,2,... and '_N' with n = 0,-1,-2,... 
     '''
     
     ### 1: INITIALIZATION AND PRECOMPUTATIONS ###
-    A = np.zeros((p_max,p_max),dtype=np.complex_)
-    B = np.zeros((p_max,p_max),dtype=np.complex_)
-    I = np.identity(p_max)
+    A = torch.zeros((p_max,p_max),dtype=torch.cfloat).to(DEVICE)
+    B = torch.zeros((p_max,p_max),dtype=torch.cfloat).to(DEVICE)
+    I = torch.eye(p_max).to(DEVICE)
+    c_P_prevsum = torch.from_numpy(c_P_prevsum_np).to(torch.cfloat).to(DEVICE)
+    c_N_prevsum = torch.from_numpy(c_N_prevsum_np).to(torch.cfloat).to(DEVICE)
 
     for p in range(p_max):
         for q in range(p_max):
@@ -139,37 +143,39 @@ def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_pr
             if p-1 == q:
                 B[p,q] = -sigma/2*sqrt(q+1)
 
-    Binv = np.linalg.inv(B)
+    Binv = torch.inverse(B)
     
     # for the computation of K_n = M1/n + M2
-    M1 = -np.dot(Binv,(A+k*omega*I))
+    M1 = -torch.matmul(Binv,A+k*omega*I)
     M2 = 2*(Binv-I)
 
     # initialize transition matrices S,SR and vectors d,dR
-    S = np.zeros((n_max+1,p_max,p_max),dtype=np.complex_)
-    SR = np.zeros((n_max+1,p_max,p_max),dtype=np.complex_)
+    S = torch.zeros((n_max+1,p_max,p_max),dtype=torch.cfloat).to(DEVICE)
+    s = torch.zeros((p_max,p_max),dtype=torch.cfloat).to(DEVICE)
+    SR = torch.zeros((n_max+1,p_max,p_max),dtype=torch.cfloat).to(DEVICE)
 
-    d = np.zeros((n_max+1,p_max),dtype=np.complex_)
-    dR = np.zeros((n_max+1,p_max),dtype=np.complex_)
+    d = torch.zeros((n_max+1,p_max),dtype=torch.cfloat).to(DEVICE)
+    dR = torch.zeros((n_max+1,p_max),dtype=torch.cfloat).to(DEVICE)
 
     
     ### 2: COMPUTE TRANSITION MATRICES S,SR AND VECTORS d,dR WITH MCF ###
     for n in range(n_max,0,-1):
-        S[n-1] = np.linalg.inv(M2 + M1/n - S[n])
-
-        c_tilde = -np.dot(Binv,c_P_prevsum[n]/2+(c_P_prevsum[n-1]+c_P_prevsum[n+1])/4)
-        d[n-1] = np.dot(S[n-1],c_tilde+d[n]) 
+        #S[n-1] = torch.inverse(M2 + M1/n - S[n])
+        s = torch.inverse(M2 + M1/n - s)
+        S[n-1] = s
+        c_tilde = -torch.matmul(Binv,c_P_prevsum[n]/2+(c_P_prevsum[n-1]+c_P_prevsum[n+1])/4)
+        d[n-1] = torch.matmul(s,c_tilde+d[n]) 
 
         # for negative indices, i.e. -|n|
-        SR[n-1] = np.linalg.inv(M2 - M1/n - SR[n])
+        SR[n-1] = torch.inverse(M2 - M1/n - SR[n])
 
-        c_tilde = -np.dot(Binv,c_N_prevsum[n]/2+(c_N_prevsum[n-1]+c_N_prevsum[n+1])/4)
-        dR[n-1] = np.dot(SR[n-1],c_tilde+dR[n])
+        c_tilde = -torch.matmul(Binv,c_N_prevsum[n]/2+(c_N_prevsum[n-1]+c_N_prevsum[n+1])/4)
+        dR[n-1] = torch.matmul(SR[n-1],c_tilde+dR[n])
  
     
     ### 3: COMPUTE EXPANSION COEFFICIENTS ###
-    c_P = np.zeros((n_max+1,p_max),dtype=np.complex_)
-    c_N = np.zeros((n_max+1,p_max),dtype=np.complex_)
+    c_P = torch.zeros((n_max+1,p_max),dtype=torch.cfloat).to(DEVICE)
+    c_N = torch.zeros((n_max+1,p_max),dtype=torch.cfloat).to(DEVICE)
 
     if k == 0 and l == 0:
         c_P[0,0] = 1
@@ -178,10 +184,10 @@ def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_pr
     for n in range(n_max):
         
         # iterate upwards
-        c_P[n+1] = np.dot(S[n],c_P[n])+d[n]
+        c_P[n+1] = torch.matmul(S[n],c_P[n])+d[n]
 
         # iterate downwards
-        c_N[n+1] = np.dot(SR[n],c_N[n])+dR[n]
+        c_N[n+1] = torch.matmul(SR[n],c_N[n])+dR[n]
 
 
     ### 4: COMPUTE RESPONSE FUNCTION r_lk ###
@@ -193,9 +199,7 @@ def single_response_func_cosine_signal(l,k,n_max,p_max,tau,sigma,mu,omega,c_P_pr
     if k != 0:
         r_lk = 2*r_lk
 
-    return r_lk,c_P,c_N
-
-
+    return r_lk.item(),c_P.cpu().detach().numpy(),c_N.cpu().detach().numpy()
 
 
 def response_funcs_cosine_signal(tau,sigma,mu,omega,l_max = 5,n_max = 100,p_max = 100):
