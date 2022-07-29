@@ -1,7 +1,6 @@
 from simulation import theta_torch
 import numpy as np
 from math import pi
-import matplotlib.pyplot as plt
 import custom_plots
 from tqdm import tqdm
 
@@ -29,7 +28,7 @@ signal = np.zeros(t_vec.shape)
 
 # STEP 1: compute an initial noise and phase distribution
 noise_ens = np.zeros(n_ens)
-phase_ens = np.linspace(0,2*pi,n_ens)
+phase_ens = np.linspace(-pi,pi,n_ens)
 
 # let the ensemble relax in its stationary state for the first data point 
 _,noise_ens,phase_ens = theta_torch(signal,dt,mu,sigma,tau[0],noise_ens,phase_ens) 
