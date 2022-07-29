@@ -12,6 +12,10 @@ def theta(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
     N = len(signal)
     period = 2*pi
 
+    # shift the phase from [-pi,pi] to [0,2*pi] for computational convenience
+    # note: sign before cos() changes
+    phase_ens = phase_ens + pi 
+
     # precompute constants for noise generation
     A = 1-dt/tau 
     B = sqrt(dt*2*sigma*sigma/tau)
@@ -59,7 +63,7 @@ def theta_torch(signal,dt,mu,sigma,tau,noise_ens,phase_ens):
     # initialization 
     firing_rate = torch.zeros(N).to(DEVICE)
     noise_ens_torch = torch.from_numpy(noise_ens).to(DEVICE)
-    phase_ens_torch = torch.from_numpy(phase_ens).to(DEVICE)
+    phase_ens_torch = torch.from_numpy(phase_ens+pi).to(DEVICE) # shift phase as in theta()
 
 
     for i in range(N):
